@@ -1,7 +1,7 @@
 # Ion concentrations in Bisley, Puerto Rico streams before and after Hurricane Hugo
 
 
-This repository contains the clean data and code necessary to replicate Figure 3 from Schaefer et al. (2000). The data for the analysis is contained within the repo under data/.
+This repository contains the clean data and code necessary to replicate Figure 3 from Schaefer et al. ([2000](https://doi.org/10.1017/s0266467400001358)). The data for the analysis is contained within the repo under data/.
 
 ## Source
 **Author:** Sarah Busby  
