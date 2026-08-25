@@ -85,7 +85,7 @@ for (i in 1:nrow(q1_ave)) {
   q1_ave$`NH4-N`[i] <- mean_NH4N
 }
 
-q1_ave_long <- q1_ave |>
+q1_average_long <- q1_ave |>
   pivot_longer(
     cols = c(K, `NO3-N`, Mg, Ca, `NH4-N`),
     names_to = "ion",
@@ -93,7 +93,7 @@ q1_ave_long <- q1_ave |>
   )
 
 ggplot(
-  data = q1_ave_long,
+  data = q1_average_long,
   mapping = aes(
     x = window_start,
     y = concentration,
