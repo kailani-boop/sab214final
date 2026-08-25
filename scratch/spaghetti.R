@@ -1,14 +1,16 @@
-# Testing cleaning Q1
-q1_clean <- q1_data |>
-  select(Sample_ID, Sample_Date, K, `NO3-N`, Mg, Ca, `NH4-N`)
+library(tidyverse)
 
 # Extract needed columns
-library(tidyverse)
 q1_data <- read_csv("data/QuebradaCuenca1-Bisley.csv")
 q2_data <- read_csv("data/QuebradaCuenca2-Bisley.csv")
 q3_data <- read_csv("data/QuebradaCuenca3-Bisley.csv")
 rmp_data <- read_csv("data/RioMameyesPuenteRoto.csv")
 
+# Testing cleaning Q1
+q1_clean <- q1_data |>
+  select(Sample_ID, Sample_Date, K, `NO3-N`, Mg, Ca, `NH4-N`)
+
+# Test combining all data frames
 big_data <- bind_rows(q1_data, q2_data, q3_data, rmp_data)
 # Select necessary columns
 data_clean <- select(
@@ -21,67 +23,6 @@ data_clean <- select(
   Ca,
   `NH4-N`
 )
-
-
-# Find moving average of K
-
-q1_K_Mg <- tibble(
-  Sample_ID = "Q1",
-  window_start = seq(
-    from = ymd(q1_clean$Sample_Date[1]),
-    to = ymd(q1_clean$Sample_Date[nrow(q1_data)]),
-    by = "9 weeks"
-  ),
-  K = NA,
-  Mg = NA
-)
-
-for (i in 1:nrow(q1_K_Mg)) {
-  start_date <- q1_K_Mg$window_start[i]
-  end_date <- q1_K_Mg$window_start[i] + weeks(9)
-
-  window_dates <- filter(
-    q1_clean,
-    Sample_Date >= start_date,
-    Sample_Date < end_date
-  )
-
-  mean_k <- mean(window_dates$K, na.rm = TRUE)
-  q1_K_Mg$K[i] <- mean_k
-
-  mean_mg <- mean(window_dates$Mg, na.rm = TRUE)
-  q1_K_Mg$Mg[i] <- mean_mg
-}
-
-# Graph Q1 K
-q1_long <- q1_K_Mg |>
-  pivot_longer(
-    cols = c(K, Mg),
-    names_to = "ion",
-    values_to = "concentration"
-  )
-# Plotting q1
-ggplot(
-  data = q1_long,
-  mapping = aes(
-    x = window_start,
-    y = concentration,
-    color = Sample_ID
-  )
-) +
-  geom_point() +
-  facet_wrap(~ion)
-
-# Plot raw data_clean K conc. over time
-ggplot(
-  data = data_clean,
-  mapping = aes(
-    x = Sample_Date,
-    y = K,
-    fill = Sample_ID
-  )
-) +
-  geom_point()
 
 
 data_long <- data_clean |>
@@ -102,7 +43,8 @@ ggplot(
   geom_point() +
   facet_wrap(~ion)
 
-### All concentrations for q1
+# Find moving average of all concentrations for q1
+
 q1_ave <- tibble(
   Sample_ID = "Q1",
   window_start = seq(
