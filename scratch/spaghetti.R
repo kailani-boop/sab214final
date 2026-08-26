@@ -93,6 +93,7 @@ q1_long <- q1_ave |>
   )
 
 ggplot(
+
   data = q1_long,
   mapping = aes(
     x = window_start,
