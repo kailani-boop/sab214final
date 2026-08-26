@@ -48,8 +48,8 @@ ggplot(
 q1_ave <- tibble(
   Sample_ID = "Q1",
   window_start = seq(
-    from = ymd(q1_clean$Sample_Date[1]),
-    to = ymd(q1_clean$Sample_Date[nrow(q1_data)]),
+    from = ymd(q1_data$Sample_Date[1]),
+    to = ymd(q1_data$Sample_Date[nrow(q1_data)]),
     by = "9 weeks"
   ),
   K = NA,
@@ -64,7 +64,7 @@ for (i in 1:nrow(q1_ave)) {
   end_date <- q1_ave$window_start[i] + weeks(9)
 
   window_dates <- filter(
-    data_clean,
+    q1_data,
     Sample_ID == "Q1",
     Sample_Date >= start_date,
     Sample_Date < end_date
@@ -94,7 +94,6 @@ q1_long <- q1_ave |>
   )
 
 ggplot(
-
   data = q1_long,
   mapping = aes(
     x = window_start,
@@ -154,7 +153,7 @@ q2_long <- q2_ave |>
     values_to = "concentration"
   )
 
-q1_q2 <- bind_rows(q1_average_long, q2_long)
+q1_q2 <- bind_rows(q1_long, q2_long)
 
 ggplot(
   data = q1_q2,
@@ -168,3 +167,29 @@ ggplot(
   facet_wrap(~ion, scales = "free_y", ncol = 1)
 
 # Note: will need to create a function to make moving averages
+
+source("R/moving-average.R")
+q1_mov_ave <- moving_average(q1_data, "Q1")
+q2_mov_ave <- moving_average(q2_data, "Q2")
+q3_mov_ave <- moving_average(q3_data, "Q3")
+mpr_mov_ave <- moving_average(mpr_data, "MPR")
+
+all_mov_ave <- bind_rows(q1_mov_ave, q2_mov_ave, q3_mov_ave, mpr_mov_ave)
+
+all_mov_ave_long <- all_mov_ave |>
+  pivot_longer(
+    cols = c(k_mgl, no3n_ugl, mg_mgl, ca_mgl, nh4n_ugl),
+    names_to = "ion",
+    values_to = "concentration"
+  )
+
+ggplot(
+  data = all_mov_ave_long,
+  mapping = aes(
+    x = window_start,
+    y = concentration,
+    color = site_id
+  )
+) +
+  geom_line() +
+  facet_wrap(~ion, scales = "free_y", ncol = 1)
