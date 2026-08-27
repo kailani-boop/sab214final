@@ -1,0 +1,51 @@
+---
+title: "Ion concentrations in Bisley, Puerto Rico streams before and after Hurricane Hugo"
+format: html
+---
+## Background
+This analysis sources the data and replicates the methods from Schaefer et al. ([2000](https://doi.org/10.1017/s0266467400001358)).
+
+## Data
+```{r, output = FALSE}
+library(tidyverse)
+
+q1_data <- read_csv("../data/QuebradaCuenca1-Bisley.csv")
+q2_data <- read_csv("../data/QuebradaCuenca2-Bisley.csv")
+q3_data <- read_csv("../data/QuebradaCuenca3-Bisley.csv")
+mpr_data <- read_csv("../data/RioMameyesPuenteRoto.csv")
+```
+## Methods
+```{r, output = FALSE}
+source("../R/moving-average.R")
+q1_mov_ave <- moving_average(q1_data)
+q2_mov_ave <- moving_average(q2_data)
+q3_mov_ave <- moving_average(q3_data)
+mpr_mov_ave <- moving_average(mpr_data)
+
+all_mov_ave <- bind_rows(q1_mov_ave, q2_mov_ave, q3_mov_ave, mpr_mov_ave)
+
+all_mov_ave_long <- all_mov_ave |>
+  pivot_longer(
+    cols = c(k_mgl, no3n_ugl, mg_mgl, ca_mgl, nh4n_ugl),
+    names_to = "ion",
+    values_to = "concentration"
+  )
+```
+## Results
+```{r, warning = FALSE}
+ggplot(
+  data = all_mov_ave_long,
+  mapping = aes(
+    x = window_start,
+    y = concentration,
+    color = site_id
+  )
+) +
+  geom_line() +
+  facet_wrap(~ion, scales = "free_y", ncol = 1) +
+  labs(
+    subtitle = "Concentrations in Bisley, Puerto Rico streams before and after Hurricane Hugo, 9-wk moving averages.
+    (a) potassium, (b) nitrate-N, (c) magnesium, (d) calcium and (e) ammonium-N. The vertical lines mark 
+    the time of hurricane disturbance."
+  )
+```

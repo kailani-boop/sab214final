@@ -169,10 +169,10 @@ ggplot(
 # Note: will need to create a function to make moving averages
 
 source("R/moving-average.R")
-q1_mov_ave <- moving_average(q1_data, "Q1")
-q2_mov_ave <- moving_average(q2_data, "Q2")
-q3_mov_ave <- moving_average(q3_data, "Q3")
-mpr_mov_ave <- moving_average(mpr_data, "MPR")
+q1_mov_ave <- moving_average(q1_data)
+q2_mov_ave <- moving_average(q2_data)
+q3_mov_ave <- moving_average(q3_data)
+mpr_mov_ave <- moving_average(mpr_data)
 
 all_mov_ave <- bind_rows(q1_mov_ave, q2_mov_ave, q3_mov_ave, mpr_mov_ave)
 
@@ -192,4 +192,12 @@ ggplot(
   )
 ) +
   geom_line() +
-  facet_wrap(~ion, scales = "free_y", ncol = 1)
+  facet_wrap(~ion, scales = "free_y", ncol = 1) +
+  labs(
+    subtitle = "Concentrations in Bisley, Puerto Rico streams before and after Hurricane Hugo, 9-wk moving averages.
+    (a) potassium, (b) nitrate-N, (c) magnesium, (d) calcium and (e) ammonium-N. The vertical lines mark 
+    the time of hurricane disturbance."
+  ) +
+  geom_vline(
+    mapping = aes(x = ymd("1989-09-18"))
+  )
