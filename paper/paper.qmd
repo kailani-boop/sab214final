@@ -17,13 +17,16 @@ mpr_data <- read_csv("../data/RioMameyesPuenteRoto.csv")
 ## Methods
 ```{r, output = FALSE}
 source("../R/moving-average.R")
+# Calculate the moving average for each site
 q1_mov_ave <- moving_average(q1_data)
 q2_mov_ave <- moving_average(q2_data)
 q3_mov_ave <- moving_average(q3_data)
 mpr_mov_ave <- moving_average(mpr_data)
 
+# Combine all sites into one data frame
 all_mov_ave <- bind_rows(q1_mov_ave, q2_mov_ave, q3_mov_ave, mpr_mov_ave)
 
+# Convert ion and concentration to their own columns
 all_mov_ave_long <- all_mov_ave |>
   pivot_longer(
     cols = c(k_mgl, no3n_ugl, mg_mgl, ca_mgl, nh4n_ugl),
@@ -47,5 +50,9 @@ ggplot(
     subtitle = "Concentrations in Bisley, Puerto Rico streams before and after Hurricane Hugo, 9-wk moving averages.
     (a) potassium, (b) nitrate-N, (c) magnesium, (d) calcium and (e) ammonium-N. The vertical lines mark 
     the time of hurricane disturbance."
+  ) +
+  geom_vline(
+    xintercept = ymd("1989-09-18"),
+    linetype = "dashed"
   )
 ```

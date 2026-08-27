@@ -1,5 +1,5 @@
 # The input to this function should be a data frame containing stream chemistry data
-# and the site id
+# with a Sample_ID and Sample_Date column
 moving_average <- function(site_data) {
   # Initialize a tibble to contain the results
   result <- tibble(
@@ -41,7 +41,5 @@ moving_average <- function(site_data) {
     result$ca_mgl[i] <- mean(ca_window, na.rm = TRUE)
     result$nh4n_ugl[i] <- mean(nh4n_window, na.rm = TRUE)
   }
-
-  # Return the result
   return(result)
 }
