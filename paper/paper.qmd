@@ -12,8 +12,10 @@ The data were retrieved from the [Environmental Data Initiative](https://doi.org
 The moving average of each ion concentration was calculated for each site in Bisley, Puerto Rico at 9 week intervals.
 
 ## Results
-```{r, echo = FALSE, warning = FALSE}
+```{r, include = FALSE}
 library(tidyverse)
+```
+```{r, echo = FALSE, warning = FALSE}
 bisley_mov_ave_long <- read_csv("../output/bisley_mov_ave_long.csv")
 ggplot(
   data = bisley_mov_ave_long,
