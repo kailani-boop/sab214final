@@ -1,6 +1,6 @@
 ## Automate
 ### The entire analysis is automated
-Meets spec: data are read in read_csv() expressions and analysis is concisely coded with intermediate output tibbles.
+Not yet: data needs to be cleaned to outputs
 
 ### The analysis produces the expected output
 Not yet: The figure is almost complete, needs some label editing to make it look closer to the original.

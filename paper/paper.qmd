@@ -3,51 +3,37 @@ title: "Ion concentrations in Bisley, Puerto Rico streams before and after Hurri
 format: html
 ---
 ## Background
-This analysis sources the data and replicates the methods from Schaefer et al. ([2000](https://doi.org/10.1017/s0266467400001358)).
+This analysis sources and analyzes data from stream sites in Bisley Puerto Rico to replicate figure 3 in Schaefer et al. ([2000](https://doi.org/10.1017/s0266467400001358)).
 
 ## Data
-```{r, output = FALSE}
-library(tidyverse)
+The data were retrieved from the [Environmental Data Initiative](https://doi.org/10.6073/PASTA/F31349BEBDC304F758718F4798D25458). 
 
-q1_data <- read_csv("../data/QuebradaCuenca1-Bisley.csv")
-q2_data <- read_csv("../data/QuebradaCuenca2-Bisley.csv")
-q3_data <- read_csv("../data/QuebradaCuenca3-Bisley.csv")
-mpr_data <- read_csv("../data/RioMameyesPuenteRoto.csv")
-```
 ## Methods
-```{r, output = FALSE}
-source("../R/moving-average.R")
-# Calculate the moving average for each site
-q1_mov_ave <- moving_average(q1_data)
-q2_mov_ave <- moving_average(q2_data)
-q3_mov_ave <- moving_average(q3_data)
-mpr_mov_ave <- moving_average(mpr_data)
+The moving average of each ion concentration was calculated for each site in Bisley, Puerto Rico at 9 week intervals.
 
-# Combine all sites into one data frame
-all_mov_ave <- bind_rows(q1_mov_ave, q2_mov_ave, q3_mov_ave, mpr_mov_ave)
-
-# Convert ion and concentration to their own columns
-all_mov_ave_long <- all_mov_ave |>
-  pivot_longer(
-    cols = c(k_mgl, no3n_ugl, mg_mgl, ca_mgl, nh4n_ugl),
-    names_to = "ion",
-    values_to = "concentration"
-  )
-```
 ## Results
-```{r, warning = FALSE}
+```{r, echo = FALSE, warning = FALSE}
+library(tidyverse)
+bisley_mov_ave_long <- read_csv("../output/bisley_mov_ave_long.csv")
 ggplot(
-  data = all_mov_ave_long,
+  data = bisley_mov_ave_long,
   mapping = aes(
     x = window_start,
     y = concentration,
     color = site_id
   )
 ) +
+  xlim(ymd("1988-01-01"), ymd("1994-06-01")) +
   geom_line() +
-  facet_wrap(~ion, scales = "free_y", ncol = 1) +
+  facet_wrap(
+    ~ion,
+    scales = "free_y",
+    ncol = 1,
+    strip.position = "left"
+  ) +
+  xlab("Year") +
   labs(
-    subtitle = "Concentrations in Bisley, Puerto Rico streams before and after Hurricane Hugo, 9-wk moving averages.
+    subtitle = "Concentrations in Bisley, Puerto Rico streams before and after Hurricane Hugo, 9-wk moving averages from 1988 through 1994.
     (a) potassium, (b) nitrate-N, (c) magnesium, (d) calcium and (e) ammonium-N. The vertical lines mark 
     the time of hurricane disturbance."
   ) +
